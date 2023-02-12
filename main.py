@@ -60,40 +60,41 @@ if __name__ == "__main__":
 
         #Loop Activies
         for item in data['records']:
-            #Check if statusMessages is setted. If not, this code will initilice a fake values to avoid errors and keep minimal code
-            if len(item['statusMessages']) < 1:
-                item['statusMessages'] = [{'messages'  : [''], 'title':''}]
+            if 'movieId' in item:
+                #Check if statusMessages is setted. If not, this code will initilice a fake values to avoid errors and keep minimal code
+                if len(item['statusMessages']) < 1:
+                    item['statusMessages'] = [{'messages'  : [''], 'title':''}]
 
-            #Getting data from Activity
-            trackedDownloadStatus = item['trackedDownloadStatus']
-            trackedDownloadState = item['trackedDownloadState']
-            statusMessage = item['statusMessages'][0]['messages'][0]
-            movieId = item['movieId']
-            title = item['movie']['title']
-            year = str(item['movie']['year'])
-            path = item['movie']['path']
-            quality = item['quality']['quality']['name']
-            source = item['outputPath']
-            file = item['statusMessages'][0]['title']
+                #Getting data from Activity
+                trackedDownloadStatus = item['trackedDownloadStatus']
+                trackedDownloadState = item['trackedDownloadState']
+                statusMessage = item['statusMessages'][0]['messages'][0]
+                movieId = item['movieId']
+                title = item['movie']['title']
+                year = str(item['movie']['year'])
+                path = item['movie']['path']
+                quality = item['quality']['quality']['name']
+                source = item['outputPath']
+                file = item['statusMessages'][0]['title']
 
-            #Print movie title to debug
-            print("||||| {}".format(title))
+                #Print movie title to debug
+                print("||||| {}".format(title))
 
-            #Check conditions to ensure that "Unable to parse file" error in statusMessage depends to importPending trackedDownloadState
-            if trackedDownloadStatus == 'warning' \
-            and trackedDownloadState == 'importPending' \
-            and statusMessage == 'Unable to parse file':
-                #Print movieId and absolute path to debug
-                print("|||||||||| Movie warning detectect: {} - {}/{}".format(movieId, title, file))
-                print("- Trying to rename and move to correct folder")
-                #Trying to make a new_name and rewrite in source. After that, Radarr automaticaly will detect this change and can parse the file.
-                try:
-                    new_name = rename(title, year, quality, file)
-                    print("- Old name: {}".format(file))
-                    print("- New name: {}".format(new_name))
-                    shutil.move(source + "/" + file, source + "/" + new_name)
-                except Exception:
-                    traceback.print_exc()
+                #Check conditions to ensure that "Unable to parse file" error in statusMessage depends to importPending trackedDownloadState
+                if trackedDownloadStatus == 'warning' \
+                and trackedDownloadState == 'importPending' \
+                and statusMessage == 'Unable to parse file':
+                    #Print movieId and absolute path to debug
+                    print("|||||||||| Movie warning detectect: {} - {}/{}".format(movieId, title, file))
+                    print("- Trying to rename and move to correct folder")
+                    #Trying to make a new_name and rewrite in source. After that, Radarr automaticaly will detect this change and can parse the file.
+                    try:
+                        new_name = rename(title, year, quality, file)
+                        print("- Old name: {}".format(file))
+                        print("- New name: {}".format(new_name))
+                        shutil.move(source + "/" + file, source + "/" + new_name)
+                    except Exception:
+                        traceback.print_exc()
     #If endpoints fails...          
     else:
         print('No data found')

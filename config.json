@@ -1,0 +1,7 @@
+{
+    "radarr" : {
+        "host" : "your_radarr_host",
+        "port" : "your_radarr_port",
+        "api_key" : "your_radarr_api_key"
+    }
+}

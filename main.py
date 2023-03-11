@@ -92,6 +92,15 @@ if __name__ == "__main__":
                         new_name = rename(title, year, quality, file)
                         print("- Old name: {}".format(file))
                         print("- New name: {}".format(new_name))
+
+                        #Quick patch to solve https://github.com/fe80Grau/Rectificarr/issues/2
+                        if(os.path.isfile(source)):
+                            mv_source = source
+                            mv_new = source.replace(source.split('/')[-1], new_name)
+                        else:
+                            mv_source = source + "/" + file
+                            mv_new = source + "/" + new_name
+
                         shutil.move(source + "/" + file, source + "/" + new_name)
                     except Exception:
                         traceback.print_exc()

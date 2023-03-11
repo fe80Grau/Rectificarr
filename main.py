@@ -101,7 +101,7 @@ if __name__ == "__main__":
                             mv_source = source + "/" + file
                             mv_new = source + "/" + new_name
 
-                        shutil.move(source + "/" + file, source + "/" + new_name)
+                        shutil.move(mv_source, mv_new)
                     except Exception:
                         traceback.print_exc()
     #If endpoints fails...          

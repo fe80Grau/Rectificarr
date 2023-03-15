@@ -23,6 +23,7 @@ import shutil
 import traceback
 import base64
 import json
+import os
 
 #Reading config file
 with open('config.json', 'r') as f:
@@ -83,7 +84,7 @@ if __name__ == "__main__":
                 #Check conditions to ensure that "Unable to parse file" error in statusMessage depends to importPending trackedDownloadState
                 if trackedDownloadStatus == 'warning' \
                 and trackedDownloadState == 'importPending' \
-                and statusMessage == 'Unable to parse file':
+                and (statusMessage == 'Unable to parse file' or statusMessage == 'Unknown Movie') :
                     #Print movieId and absolute path to debug
                     print("|||||||||| Movie warning detectect: {} - {}/{}".format(movieId, title, file))
                     print("- Trying to rename and move to correct folder")

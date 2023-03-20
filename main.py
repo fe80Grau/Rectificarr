@@ -162,6 +162,7 @@ if __name__ == "__main__":
                         else:
                             if not os.path.isfile(source + "/" + file_source):
                                 for f in glob.glob("{}/*".format(source)):
+                                    print(f)
                                     if mimetypes.guess_type(f)[0].startswith('video'):
                                         file_source = f.split('/')[-1]
                                 

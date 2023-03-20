@@ -71,7 +71,7 @@ for movie in movies:
     })
 
     history_url_radarr = makeUrl(config['radarr']['host'],
-                                 config['radarr']['porst'],
+                                 config['radarr']['port'],
                                  'api/v3/history/movie',
                                  params_radarr)
     

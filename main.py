@@ -161,6 +161,8 @@ if __name__ == "__main__":
                             mv_new = source.replace(source.split('/')[-1], new_name)
                         else:
                             if not os.path.isfile(source + "/" + file_source):
+                                print("Is not a file")
+                                print(source)
                                 for f in glob.glob("{}/*".format(source)):
                                     print(f)
                                     if mimetypes.guess_type(f)[0].startswith('video'):

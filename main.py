@@ -78,7 +78,8 @@ for movie in movies:
     histories = requests.get(history_url_radarr).json()
     downloadsIds = []
     for history in histories:
-        downloadsIds.append(history['downloadId'])
+        if 'downloadId' in history:
+            downloadsIds.append(history['downloadId'])
 
     data = {
         "id" : movie['id'],

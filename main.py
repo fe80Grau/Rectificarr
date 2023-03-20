@@ -24,33 +24,73 @@ import traceback
 import base64
 import json
 import os
+import mimetypes
+import glob
 
 #Reading config file
 with open('config.json', 'r') as f:
     config = json.load(f)
 
-#Define Radarr setting and enpoint url constructor 
-
-#Queue
-apikey_radarr = config['radarr']['api_key']
-baseurl_radarr = "http://{}:{}/api/v3/".format(config['radarr']['host'], config['radarr']['port'])
-endpoint_radarr = "queue"
-params_radarr = urllib.parse.urlencode({
-    "includeUnknownMovieItems" : "true",
-    "includeMovie" : "true",
-    "apikey" : apikey_radarr
-})
-
-#Make url merging chunks
-queue_url_radarr = baseurl_radarr + endpoint_radarr + "?" + params_radarr
-
-#Get list of all movies /api/v3/movie amd merging history
-movies_history = []
+#Utils
+def makeUrl(host, port, endpoint, params):
+    baseurl = "http://{}:{}/".format(host, port)
+    return "{}{}?{}".format(baseurl, endpoint, params)
 
 def rename(title, year, quality, file):
     return "{} ({}) {}.{}".format(title, year, quality, file.split('.')[-1])
 
+#Define Radarr setting and enpoint url constructor 
+#Queue
+params_radarr = urllib.parse.urlencode({
+    "includeUnknownMovieItems" : "true",
+    "includeMovie" : "true",
+    "apikey" : config['radarr']['api_key']
+})
+#Make url merging chunks with makeUrl util
+queue_url_radarr = makeUrl(config['radarr']['host'], 
+                            config['radarr']['port'],
+                            'api/v3/queue',
+                            params_radarr)
 
+#Get list of all movies /api/v3/movie amd merging history
+movies_history = []
+params_radarr = urllib.parse.urlencode({
+    "apikey" : config['radarr']['api_key']
+})
+
+movies_url_radarr = makeUrl(config['radarr']['host'], 
+                            config['radarr']['port'],
+                            'api/v3/movie',
+                            params_radarr)
+
+movies = requests.get(movies_url_radarr).json()
+for movie in movies:
+    params_radarr = urllib.parse.urlencode({
+        "movieid" : movie['id'],
+        "apikey" : config['radarr']['api_key']
+    })
+
+    history_url_radarr = makeUrl(config['radarr']['host'],
+                                 config['radarr']['porst'],
+                                 'api/v3/history/movie',
+                                 params_radarr)
+    
+    histories = requests.get(history_url_radarr).json()
+    downloadsIds = []
+    for history in histories:
+        downloadsIds.append(history['downloadId'])
+
+    data = {
+        "id" : movie['id'],
+        "title" : movie['title'],
+        "year" : movie['year'],
+        "path" : movie['path'],
+        "downloadIds" : downloadsIds
+    }
+
+    movies_history.append(data)
+
+#MAIN
 if __name__ == "__main__":
     #Call url_radarr with GET 
     data = requests.get(queue_url_radarr).json()
@@ -76,19 +116,19 @@ if __name__ == "__main__":
 
             if not "wasn't grabbed by Radarr" in statusMessage:
                 if not 'movieId' in item:
-                    #Search downloadId in movies_history
-                    #si lo encuentra
-                    #consutrir 
-                        #item['movieId']
-                        #item['movie']['title']
-                        #item['movie']['year']
-                        #item['movie']['path']
-                        #item['quality']['quality']['name']
-
-                    #si no
-                    #break
+                    for mh in movies_history:
+                        if item['downloadId'] in mh['downloadIds']:
+                            item['movieId'] = mh['id']
+                            item['movie'] = {
+                                "title" : mh['title'],
+                                "year" : mh['year'],
+                                "path" : mh['path']
+                            }
+                            break
                     
-
+                    if not 'movieId' in item:
+                        break
+                
                 #Getting data from Activity
                 movieId = item['movieId']
                 title = item['movie']['title']
@@ -115,10 +155,15 @@ if __name__ == "__main__":
                         print("- New name: {}".format(new_name))
 
                         #Quick patch to solve https://github.com/fe80Grau/Rectificarr/issues/2
-                        if(os.path.isfile(source)):
+                        if os.path.isfile(source):
                             mv_source = source
                             mv_new = source.replace(source.split('/')[-1], new_name)
                         else:
+                            if not os.path.isfile(source + "/" + file_source):
+                                for f in glob.glob("{}/*".format(source)):
+                                    if mimetypes.guess_type(f)[0].startswith('video'):
+                                        file_source = f.split('/')[-1]
+                                
                             mv_source = source + "/" + file_source
                             mv_new = source + "/" + new_name
 

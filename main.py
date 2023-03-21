@@ -164,9 +164,7 @@ if __name__ == "__main__":
                                 print("Is not a file")
                                 for f in os.listdir(source):
                                     if os.path.isfile(os.path.join(source, f)):
-                                        print(f)
-                                        if mimetypes.guess_type(os.path.join(source, f))[0].startswith('video'):
-                                            file_source = f
+                                        file_source = f
                                 
                             mv_source = source + "/" + file_source
                             mv_new = source + "/" + new_name

@@ -213,8 +213,8 @@ if __name__ == "__main__":
                         delete_url_radarr = makeUrl(config['radarr']['host'],
                                                         config['radarr']['port'],
                                                         'api/v3/queue/{}'.format(queue_id),
-                                                        params_radarr)
-                        delete_result = requests.get(delete_url_radarr).json()
+                                                        {})
+                        delete_result = requests.delete(delete_url_radarr, data=params_radarr).json()
                         print(delete_result)
                         print("Delete done")
                     except Exception:

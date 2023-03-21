@@ -162,12 +162,11 @@ if __name__ == "__main__":
                         else:
                             if not os.path.isfile(source + "/" + file_source):
                                 print("Is not a file")
-                                print(source)
-                                print(glob.glob(source))
-                                for f in glob.glob(glob.escape("{}/**/*".format(source))):
-                                    print(f)
-                                    if mimetypes.guess_type(f)[0].startswith('video'):
-                                        file_source = f.split('/')[-1]
+                                for f in os.listdir(source):
+                                    if os.path.isfile(os.path.join(source, f)):
+                                        print(f)
+                                        if mimetypes.guess_type(os.path.join(source, f))[0].startswith('video'):
+                                            file_source = f
                                 
                             mv_source = source + "/" + file_source
                             mv_new = source + "/" + new_name

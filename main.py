@@ -103,7 +103,6 @@ if __name__ == "__main__":
     #An activity is a download/rewrite process. A movie can be download many times with differents torrent tyrs, each download is an activity.
     if 'records' in data:
         print('Processing data from Radarr')
-        print('{}'.format(queue_url_radarr))
 
         #Loop Activies
         for item in data['records']:
@@ -190,7 +189,6 @@ if __name__ == "__main__":
                                                         'api/v3/manualimport',
                                                         params_radarr)
                         manual_import_result = requests.get(manual_import_radarr).json()
-                        print(manual_import_result)
                         print("import done")
 
                         #Rescan movie with /api/command?name=RescanMovie?movieId={movieId}

@@ -139,6 +139,12 @@ if __name__ == "__main__":
                 source = item['outputPath']
                 file_source = item['statusMessages'][0]['title']
 
+                if not os.path.isfile(source + "/" + file_source):
+                    print("Is not a file")
+                    for f in os.listdir(source):
+                        if os.path.isfile(os.path.join(source, f)):
+                            file_source = f
+
                 #Print movie title to debug
                 print("||||| {}".format(title))
 
@@ -159,13 +165,7 @@ if __name__ == "__main__":
                         if os.path.isfile(source):
                             mv_source = source
                             mv_new = source.replace(source.split('/')[-1], new_name)
-                        else:
-                            if not os.path.isfile(source + "/" + file_source):
-                                print("Is not a file")
-                                for f in os.listdir(source):
-                                    if os.path.isfile(os.path.join(source, f)):
-                                        file_source = f
-                                
+                        else:                                
                             mv_source = source + "/" + file_source
                             mv_new = source + "/" + new_name
 

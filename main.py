@@ -177,11 +177,7 @@ if __name__ == "__main__":
                         print("|||||Importing movie... ")
                         if not os.path.isfile("{}/{}".format(path, new_name)):
                             shutil.copy(mv_source, "{}/{}".format(path, new_name))
-                        print("import done")
                         
-                        #Rescan movie with /api/command?name=RescanMovie?movieId={movieId}
-                        print("|||||Rescanning movie... ")
-
                         params_radarr = urllib.parse.urlencode({
                             "folder" : "{}/{}".format(path, new_name),
                             "downloadId" : downloadId,
@@ -192,10 +188,12 @@ if __name__ == "__main__":
                                                         config['radarr']['port'],
                                                         'api/v3/manualimport',
                                                         params_radarr)
-
                         manual_import_result = requests.get(manual_import_radarr).json()
                         print(manual_import_result)
+                        print("import done")
 
+                        #Rescan movie with /api/command?name=RescanMovie?movieId={movieId}
+                        print("|||||Rescanning movie... ")
                         params_radarr = urllib.parse.urlencode({
                             "movieid" : movieId,
                             "apikey" : config['radarr']['api_key']
@@ -205,7 +203,7 @@ if __name__ == "__main__":
                                                         'api/v3/command',
                                                         params_radarr)
                         command_result = requests.get(command_url_radarr).json()
-                        print(command_result)
+                        print("Rescan done")
                     except Exception:
                         traceback.print_exc()
     #If endpoints fails...          

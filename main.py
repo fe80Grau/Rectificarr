@@ -205,7 +205,7 @@ if __name__ == "__main__":
                                                         params_radarr)
                         command_result = requests.get(command_url_radarr).json()
                         print("Rescan done")
-
+                        """
                         print("|||||Deleting in queue...")
                         params_radarr = urllib.parse.urlencode({
                             "apikey" : config['radarr']['api_key']
@@ -217,6 +217,7 @@ if __name__ == "__main__":
                         delete_result = requests.delete(delete_url_radarr, data=json.dumps(params_radarr)).json()
                         print(delete_result)
                         print("Delete done")
+                        """
                     except Exception:
                         traceback.print_exc()
     #If endpoints fails...          

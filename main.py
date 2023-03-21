@@ -70,6 +70,7 @@ for movie in movies:
         "apikey" : config['radarr']['api_key']
     })
 
+    #Get history for movie item
     history_url_radarr = makeUrl(config['radarr']['host'],
                                  config['radarr']['port'],
                                  'api/v3/history/movie',
@@ -131,6 +132,7 @@ if __name__ == "__main__":
                         break
                 
                 #Getting data from Activity
+                downloadId = item['downloadId']
                 movieId = item['movieId']
                 title = item['movie']['title']
                 year = str(item['movie']['year'])
@@ -169,16 +171,35 @@ if __name__ == "__main__":
                             mv_source = source + "/" + file_source
                             mv_new = source + "/" + new_name
 
-                        shutil.move(mv_source, mv_new)
+                        #shutil.move(mv_source, mv_new)
 
                         #Copy file to Radarr defined movie path
-                        shutil.copy(mv_new, "{}/{}".format(path, new_name))
-
+                        print("|||||Importing movie... ")
+                        if not os.path.isfile("{}/{}".format(path, new_name)):
+                            shutil.copy(mv_source, "{}/{}".format(path, new_name))
+                        print("import done")
+                        
                         #Rescan movie with /api/command?name=RescanMovie?movieId={movieId}
+                        print("|||||Rescanning movie... ")
+
                         params_radarr = urllib.parse.urlencode({
+                            "folder" : "{}/{}".format(path, new_name),
+                            "downloadId" : downloadId,
                             "movieid" : movieId,
                             "apikey" : config['radarr']['api_key']
                         })
+                        manual_import_radarr = makeUrl(config['radarr']['host'],
+                                                        config['radarr']['port'],
+                                                        'api/v3/manualimport',
+                                                        params_radarr)
+
+                        manual_import_result = requests.get(manual_import_radarr).json()
+                        print(manual_import_result)
+
+                        params_radarr = urllib.parse.urlencode({
+                            "movieid" : movieId,
+                            "apikey" : config['radarr']['api_key']
+                        })                        
                         command_url_radarr = makeUrl(config['radarr']['host'],
                                                         config['radarr']['port'],
                                                         'api/v3/command',

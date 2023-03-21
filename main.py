@@ -172,8 +172,19 @@ if __name__ == "__main__":
                         shutil.move(mv_source, mv_new)
 
                         #Copy file to Radarr defined movie path
+                        shutil.copy(mv_new, "{}/{}".format(path, new_name))
 
                         #Rescan movie with /api/command?name=RescanMovie?movieId={movieId}
+                        params_radarr = urllib.parse.urlencode({
+                            "movieid" : movieId,
+                            "apikey" : config['radarr']['api_key']
+                        })
+                        command_url_radarr = makeUrl(config['radarr']['host'],
+                                                        config['radarr']['port'],
+                                                        'api/v3/command',
+                                                        params_radarr)
+                        command_result = requests.get(command_url_radarr).json()
+                        print(command_result)
                     except Exception:
                         traceback.print_exc()
     #If endpoints fails...          

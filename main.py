@@ -132,6 +132,7 @@ if __name__ == "__main__":
                         break
                 
                 #Getting data from Activity
+                queue_id = item['id']
                 downloadId = item['downloadId']
                 movieId = item['movieId']
                 title = item['movie']['title']
@@ -204,6 +205,17 @@ if __name__ == "__main__":
                                                         params_radarr)
                         command_result = requests.get(command_url_radarr).json()
                         print("Rescan done")
+
+                        print("|||||Deleting in queue...")
+                        params_radarr = urllib.parse.urlencode({
+                            "apikey" : config['radarr']['api_key']
+                        })                        
+                        delete_url_radarr = makeUrl(config['radarr']['host'],
+                                                        config['radarr']['port'],
+                                                        'api/v3/queue/{}'.format(queue_id),
+                                                        params_radarr)
+                        delete_result = requests.get(delete_url_radarr).json()
+                        print("Delete done")
                     except Exception:
                         traceback.print_exc()
     #If endpoints fails...          

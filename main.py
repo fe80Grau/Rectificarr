@@ -196,6 +196,7 @@ if __name__ == "__main__":
                         #Rescan movie with /api/command?name=RescanMovie?movieId={movieId}
                         print("|||||Rescanning movie... ")
                         params_radarr = urllib.parse.urlencode({
+                            "name" : "RescanMovie",
                             "movieid" : movieId,
                             "apikey" : config['radarr']['api_key']
                         })                        

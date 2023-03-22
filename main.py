@@ -142,7 +142,7 @@ if __name__ == "__main__":
                 file_source = item['statusMessages'][0]['title']
 
                 #If the movie is in a folder
-                if not os.path.isfile(source + "/" + file_source):
+                if not os.path.isfile(source):
                     for f in os.listdir(source):
                         if os.path.isfile(os.path.join(source, f)):
                             file_source = f

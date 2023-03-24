@@ -26,19 +26,30 @@ import json
 import os
 import mimetypes
 import glob
+mimetypes.init()
 
 #Reading config file
 with open('config.json', 'r') as f:
     config = json.load(f)
 
 #Utils
-def makeUrl(host, port, endpoint, params):
+def makeUrl(host, port, endpoint, params=False):
     baseurl = "http://{}:{}/".format(host, port)
-    return "{}{}?{}".format(baseurl, endpoint, params)
+    return "{}{}?{}".format(baseurl, endpoint, params) if params else "{}{}".format(baseurl, endpoint)
 
 def rename(title, year, quality, file):
     return "{} ({}) {}.{}".format(title, year, quality, file.split('.')[-1])
 
+def isMediaFile(fileName):
+    mimestart = mimetypes.guess_type(fileName)[0]
+
+    if mimestart != None:
+        mimestart = mimestart.split('/')[0]
+
+        if mimestart in ['video']:
+            return True
+    
+    return False
 #Define Radarr setting and enpoint url constructor 
 #Queue
 params_radarr = urllib.parse.urlencode({
@@ -144,7 +155,7 @@ if __name__ == "__main__":
                 #If the movie is in a folder
                 if not os.path.isfile(source):
                     for f in os.listdir(source):
-                        if os.path.isfile(os.path.join(source, f)):
+                        if os.path.isfile(os.path.join(source, f)) and isMediaFile(os.path.join(source, f)):
                             file_source = f
 
                 #Print movie title to debug
@@ -175,6 +186,9 @@ if __name__ == "__main__":
 
                         #Copy file to Radarr defined movie path
                         print("|||||Importing movie... ")
+                        if not os.path.isdir(path):
+                            os.mkdir(path)
+
                         if not os.path.isfile("{}/{}".format(path, new_name)):
                             shutil.copy(mv_source, "{}/{}".format(path, new_name))
                         
@@ -204,19 +218,18 @@ if __name__ == "__main__":
                                                         params_radarr)
                         command_result = requests.get(command_url_radarr).json()
                         print("Rescan done")
-                        """
                         print("|||||Deleting in queue...")
-                        params_radarr = urllib.parse.urlencode({
-                            "apikey" : config['radarr']['api_key']
-                        })                        
+                        params_radarr = {
+                            "apikey" : config['radarr']['api_key'],
+                            "removeFromClient" : False,
+                            "blocklist" : False
+                        }                        
                         delete_url_radarr = makeUrl(config['radarr']['host'],
                                                         config['radarr']['port'],
-                                                        'api/v3/queue/{}'.format(queue_id),
-                                                        params_radarr)
+                                                        'api/v3/queue/{}'.format(queue_id))
                         delete_result = requests.delete(delete_url_radarr, data=json.dumps(params_radarr)).json()
                         print(delete_result)
                         print("Delete done")
-                        """
                     except Exception:
                         traceback.print_exc()
     #If endpoints fails...          

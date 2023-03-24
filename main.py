@@ -188,8 +188,7 @@ if __name__ == "__main__":
                         print("|||||Importing movie... ")
                         print(path)
                         if not os.path.isdir(path):
-                            os.mkdir(path.replace(path.split('/')[-1], 'test'))
-                            os.makedirs(path)
+                            os.makedirs(path.econde().decode('unicode_escape'))
                         else:
                             print(path)
                             print("Exists")

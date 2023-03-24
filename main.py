@@ -187,7 +187,11 @@ if __name__ == "__main__":
                         #Copy file to Radarr defined movie path
                         print("|||||Importing movie... ")
                         print(path)
-                        os.makedirs(os.path.dirname(path), exist_ok=True)
+                        if not os.path.isdir(path):
+                            os.makedirs(os.path.dirname(path), exist_ok=True)
+                        else:
+                            print(os.path.dirname(path))
+                            print("Exists")
 
                         if not os.path.isfile("{}/{}".format(path, new_name)):
                             shutil.copy(mv_source, "{}/{}".format(path, new_name))

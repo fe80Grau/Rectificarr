@@ -222,17 +222,21 @@ if __name__ == "__main__":
                         command_result = requests.get(command_url_radarr).json()
                         print("Rescan done")
                         print("|||||Removing from queue...")
-                        params_radarr = {
+                        params_radarr = urllib.parse.urlencode({
                             "apikey" : config['radarr']['api_key'],
                             "removeFromClient" : False,
                             "blocklist" : False
-                        }                        
+                        })                    
                         delete_url_radarr = makeUrl(config['radarr']['host'],
                                                         config['radarr']['port'],
-                                                        'api/v3/queue/{}'.format(queue_id))
-                        delete_result = requests.delete(delete_url_radarr, data=json.dumps(params_radarr)).json()
-                        print(delete_result)
-                        print("Delete done")
+                                                        'api/v3/queue/{}'.format(queue_id),
+                                                        params_radarr)
+                        delete_result = requests.delete(delete_url_radarr)
+                        if delete_result.status_code == 200:
+                            print("Delete done")
+                        else:
+                            print(delete_result)
+                            print(delete_result.text)
                     except Exception:
                         traceback.print_exc()
     #If endpoints fails...          

@@ -190,7 +190,8 @@ if __name__ == "__main__":
                         print("|||||Importing movie... ")
                         print(path)
                         if not os.path.isdir(path):
-                            result_mkdir = subprocess.getoutput("mkdir \"{}\"".format(path))
+                            result_mkdir = subprocess.getoutput("mkdir \"The Lord of The Rings The Two Towers (2002)\"".format(path))
+                            print("mkdir \"The Lord of The Rings The Two Towers (2002)\"".format(path))
                             print(result_mkdir)
                         else:
                             print(path)

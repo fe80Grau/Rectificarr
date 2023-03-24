@@ -24,7 +24,7 @@ def remove_queue(queue_id):
                                     config['radarr']['port'],
                                     'api/v3/queue/{}'.format(queue_id))
     delete_result = requests.delete(delete_url_radarr, data=json.dumps(params_radarr))
-    print(delete_result)
+    print(delete_result.text)
     print("Delete done")
 
 

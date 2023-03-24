@@ -189,7 +189,7 @@ if __name__ == "__main__":
                         print(path)
                         if not os.path.isdir(path):
                             os.mkdir(path.replace(path.split('/')[-1], 'test'))
-                            os.makesdir(path)
+                            os.makedirs(path)
                         else:
                             print(path)
                             print("Exists")

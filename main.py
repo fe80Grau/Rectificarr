@@ -207,19 +207,6 @@ if __name__ == "__main__":
                         manual_import_result = requests.get(manual_import_radarr).json()
                         print("import done")
 
-                        #Rescan movie with /api/command?name=RescanMovie?movieId={movieId}
-                        print("|||||Rescanning movie... ")
-                        params_radarr = urllib.parse.urlencode({
-                            "name" : "RescanMovie",
-                            "movieid" : movieId,
-                            "apikey" : config['radarr']['api_key']
-                        })                        
-                        command_url_radarr = makeUrl(config['radarr']['host'],
-                                                        config['radarr']['port'],
-                                                        'api/v3/command',
-                                                        params_radarr)
-                        command_result = requests.get(command_url_radarr).json()
-                        print("Rescan done")
                         print("|||||Removing from queue...")
                         params_radarr = urllib.parse.urlencode({
                             "apikey" : config['radarr']['api_key'],
@@ -236,6 +223,21 @@ if __name__ == "__main__":
                         else:
                             print(delete_result)
                             print(delete_result.text)
+
+
+                        #Rescan movie with /api/command?name=RescanMovie?movieId={movieId}
+                        print("|||||Rescanning movie... ")
+                        params_radarr = urllib.parse.urlencode({
+                            "name" : "RescanMovie",
+                            "movieid" : movieId,
+                            "apikey" : config['radarr']['api_key']
+                        })                        
+                        command_url_radarr = makeUrl(config['radarr']['host'],
+                                                        config['radarr']['port'],
+                                                        'api/v3/command',
+                                                        params_radarr)
+                        command_result = requests.get(command_url_radarr).json()
+                        print("Rescan done")
                     except Exception:
                         traceback.print_exc()
     #If endpoints fails...          

@@ -221,7 +221,7 @@ if __name__ == "__main__":
                                                         params_radarr)
                         command_result = requests.get(command_url_radarr).json()
                         print("Rescan done")
-                        print("|||||Deleting in queue...")
+                        print("|||||Removing from queue...")
                         params_radarr = {
                             "apikey" : config['radarr']['api_key'],
                             "removeFromClient" : False,

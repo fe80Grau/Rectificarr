@@ -26,6 +26,8 @@ import json
 import os
 import mimetypes
 import glob
+import subprocess
+
 mimetypes.init()
 
 #Reading config file
@@ -188,7 +190,8 @@ if __name__ == "__main__":
                         print("|||||Importing movie... ")
                         print(path)
                         if not os.path.isdir(path):
-                            os.mkdir(path.encode().decode('unicode_escape'))
+                            result_mkdir = subprocess.getoutput("mkdir \"{}\"".format(path))
+                            print(result_mkdir)
                         else:
                             print(path)
                             print("Exists")

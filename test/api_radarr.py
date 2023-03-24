@@ -15,14 +15,15 @@ def makeUrl(host, port, endpoint, params=False):
 
 def remove_queue(queue_id):
     print("|||||Removing from queue...")
-    params_radarr = {
+    params_radarr = urllib.parse.urlencode({
         "apikey" : config['radarr']['api_key'],
         "removeFromClient" : False,
         "blocklist" : False
-    }                        
+    })             
     delete_url_radarr = makeUrl(config['radarr']['host'],
                                     config['radarr']['port'],
-                                    'api/v3/queue/{}'.format(queue_id))
+                                    'api/v3/queue/{}'.format(queue_id),
+                                    params_radarr)
     delete_result = requests.delete(delete_url_radarr, data=json.dumps(params_radarr))
     print(delete_result.text)
     print("Delete done")

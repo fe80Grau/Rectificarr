@@ -188,7 +188,6 @@ if __name__ == "__main__":
 
                         #Copy file to Radarr defined movie path
                         print("|||||Importing movie... ")
-                        print(path)
                         if not os.path.isdir(path):
                             os.mkdir(path)
 

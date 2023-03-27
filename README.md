@@ -1,6 +1,6 @@
 # Rectificarr
 * Sometimes Torrent Trackers set shit names in movie files.
-* This shit causes "Unable to parse file" error in Radarr Activity, then Radarr can't rewrite file to setted Path.
+* This shit causes "Unable to parse file" or "Unknown Movie" error in Radarr Activity, then Radarr can't rewrite file to setted Path.
 * This script uses Radarr API to check if exist an activity with this error and force rename
 * Optional, This project contains posttorrent.sh Bash script integrated with Transmission Daemon to auto-unrar torrent downloads. 
 

@@ -126,7 +126,11 @@ if __name__ == "__main__":
 
             trackedDownloadStatus = item['trackedDownloadStatus']
             trackedDownloadState = item['trackedDownloadState']
-            statusMessage = item['statusMessages'][0]['messages'][0]  
+            try:
+                statusMessage = item['statusMessages'][0]['messages'][0]  
+            except:
+                print(item)
+                queue_url_radarr = ""
 
             if not "wasn't grabbed by Radarr" in statusMessage:
                 if not 'movieId' in item:
